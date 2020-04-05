@@ -62,11 +62,17 @@
       }
     },
     methods: {
-      login() {
-        console.log(this.loginForm)
+      async register() {
+        await this.$store.dispatch('auth/register', this.registerForm)
+        this.$router.push('/')
       },
-      register () {
-        console.log(this.registerForm)
+      async login() {
+        await this.$store.dispatch('auth/login', this.loginForm)
+        this.$router.push('/')
+      },
+      async logout(context) {
+        const response = await axios.post('/api/logout')
+        context.commit('setUser', null)
       }
     }
   }
