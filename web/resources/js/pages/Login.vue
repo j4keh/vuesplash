@@ -16,6 +16,14 @@
     </ul>
     <div class="panel" v-show="tab === 1">
       <form class="form" @submit.prevent="login">
+        <div v-if="loginErrorMessages" class="errors">
+          <ul v-if="loginErrorMessages.email">
+            <li v-for="msg in loginErrorMessages.email" :key="msg">{{ msg }}</li>
+          </ul>
+          <ul v-if="loginErrorMessages.password">
+            <li v-for="msg in loginErrorMessages.password" :key="msg">{{ msg }}</li>
+          </ul>
+        </div>
         <label for="login-email">Email</label>
         <input type="text" class="form__item" id="login-email" v-model="loginForm.email">
         <label for="login-password">Password</label>
@@ -26,7 +34,17 @@
       </form>
     </div>
     <div class="panel" v-show="tab === 2">
-      <form class="form" @submit.prevent="register">
+      <form class="form" @submit.prevent="register">  <div v-if="registerErrors" class="errors">
+        <ul v-if="registerErrorMessages.name">
+          <li v-for="msg in registerErrorMessages.name" :key="msg">{{ msg }}</li>
+        </ul>
+        <ul v-if="registerErrorMessages.email">
+          <li v-for="msg in registerErrorMessages.email" :key="msg">{{ msg }}</li>
+        </ul>
+        <ul v-if="registerErrorMessages.password">
+          <li v-for="msg in registerErrorMessages.password" :key="msg">{{ msg }}</li>
+        </ul>
+      </div>
         <label for="username">Name</label>
         <input type="text" class="form__item" id="username" v-model="registerForm.name">
         <label for="email">Email</label>
@@ -61,19 +79,41 @@
         },
       }
     },
+    computed: {
+      apiStatus() {
+        return this.$store.getters['auth/apiStatus']
+      },
+      loginErrorMessages() {
+        return this.$store.getters['auth/loginErrorMessages']
+      },
+      registerErrorMessages() {
+        return this.$store.getters['auth/registerErrorMessages']
+      }
+    },
     methods: {
       async register() {
         await this.$store.dispatch('auth/register', this.registerForm)
-        this.$router.push('/')
+        if(this.apiStatus) {
+          this.$router.push('/')
+        }
       },
       async login() {
         await this.$store.dispatch('auth/login', this.loginForm)
-        this.$router.push('/')
+        if(this.apiStatus) {
+          this.$router.push('/')
+        }
       },
       async logout(context) {
         const response = await axios.post('/api/logout')
         context.commit('setUser', null)
+      },
+      clearError() {
+        this.$store.commit('auth/setLoginErrorMessages', null)
+        this.$store.commit('auth/setRegisterErrorMessages', null)
       }
+    },
+    created() {
+      this.clearError()
     }
   }
 </script>

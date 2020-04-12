@@ -12,13 +12,18 @@
     computed: {
       isLogin() {
         return this.$store.getters['auth/check']
+      },
+      apiStatus() {
+        return this.$store.getters['auth/apiStatus']
       }
     },
     methods: {
       async logout() {
         await this.$store.dispatch('auth/logout')
 
-        this.$router.push('/login')
+        if(this.apiStatus) {
+          this.$router.push('/login')
+        }
       }
     }
   }
