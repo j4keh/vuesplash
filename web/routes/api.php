@@ -2,6 +2,7 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -14,9 +15,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::middleware('auth:api')->get('/user', function(Request $request) {
-    return $request->user();
-});
+Route::middleware('auth:api')->get('/user', fn(Request $request) => $request->user());
 
 Route::post('/register', 'Auth\RegisterController@register')->name('register');
 Route::post('/login', 'Auth\LoginController@login')->name('login');
@@ -28,3 +27,7 @@ Route::get('/photos/{id}', 'PhotoController@show')->name('photo.show');
 Route::post('/photos/{photo}/comments', 'PhotoController@addComment')->name('photo.comment');
 Route::put('/photos/{id}/like', 'PhotoController@like')->name('photo.like');
 Route::delete('/photos/{id}/like', 'PhotoController@unlike');
+Route::get('/refresh-token', function(Request $request) {
+    $request->session()->regenerateToken();
+    return response()->json();
+});

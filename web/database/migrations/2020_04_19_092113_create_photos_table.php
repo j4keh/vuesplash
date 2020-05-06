@@ -13,7 +13,7 @@ class CreatePhotosTable extends Migration
      */
     public function up()
     {
-        Schema::create('photos', function (Blueprint $table) {
+        Schema::create('photos', function(Blueprint $table) {
             $table->string('id')->primary();
             $table->unsignedInteger('user_id');
             $table->string('filename');
