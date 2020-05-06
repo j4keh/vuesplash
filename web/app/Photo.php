@@ -59,7 +59,7 @@ class Photo extends Model
 
         $length = count($characters);
 
-        $id = "";
+        $id = '';
 
         for ($i = 0; $i < self::ID_LENGTH; $i++) {
             $id .= $characters[random_int(0, $length - 1)];
@@ -93,5 +93,14 @@ class Photo extends Model
     public function comments()
     {
         return $this->hasMany('App\Comment')->orderBy('id', 'desc');
+    }
+
+    /**
+     * リレーションシップ - usersテーブル
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function likes()
+    {
+        return $this->belongsToMany('App\User', 'likes')->withTimestamps();
     }
 }
