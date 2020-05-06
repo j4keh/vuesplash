@@ -128,8 +128,6 @@ class Photo extends Model
             return false;
         }
 
-        return $this->likes->contains(function($user) {
-            return $user->id === Auth::user()->id;
-        });
+        return $this->likes->contains(fn($user) => $user->id === Auth::user()->id);
     }
 }
